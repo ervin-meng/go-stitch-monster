@@ -1,4 +1,4 @@
-module github/ervin-meng/go-conch
+module github.com/ervin-meng/go-conch
 
 go 1.15
 
