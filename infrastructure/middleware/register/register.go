@@ -31,7 +31,7 @@ func Init(serviceType int, serviceName string, serviceIp string, servicePort int
 		if err != nil {
 			logger.Global.Info(serviceName+"服务注销失败：", err)
 		} else {
-			logger.Global.Info(serviceName + "RPC服务注销成功")
+			logger.Global.Info(serviceName + "服务注销成功")
 		}
 	})
 }
