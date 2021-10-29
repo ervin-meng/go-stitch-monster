@@ -2,7 +2,10 @@ package register
 
 import (
 	"fmt"
+	"github.com/ervin-meng/go-stitch-monster/infrastructure/event"
+	"github.com/ervin-meng/go-stitch-monster/infrastructure/middleware/logger"
 	"github.com/hashicorp/consul/api"
+	"github.com/satori/go.uuid"
 )
 
 const (
@@ -12,10 +15,25 @@ const (
 
 var Client *api.Client
 
-func Init(ip string, port int) {
+func Init(serviceType int, serviceName string, serviceIp string, servicePort int) {
+	//创建配置
 	cfg := api.DefaultConfig()
-	cfg.Address = fmt.Sprintf("%s:%d", ip, port)
+	cfg.Address = fmt.Sprintf("%s:%d", serviceIp, servicePort)
+	//创建客户端
 	Client, _ = api.NewClient(cfg)
+	//创建服务ID
+	id := fmt.Sprintf("%s", uuid.NewV4())
+	//服务注册
+	ServiceRegister(serviceType, id, serviceName, serviceIp, servicePort)
+	//事件句柄
+	event.RegisterHandler(event.ServiceTerm, func() {
+		err := ServiceDeregister(id)
+		if err != nil {
+			logger.Global.Info(serviceName+"服务注销失败：", err)
+		} else {
+			logger.Global.Info(serviceName + "RPC服务注销成功")
+		}
+	})
 }
 
 func ServiceRegister(serviceType int, id string, name string, ip string, port int) {
