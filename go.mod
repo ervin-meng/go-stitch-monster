@@ -1,4 +1,4 @@
-module github.com/ervin-meng/go-conch
+module github.com/ervin-meng/go-stitch-monster
 
 go 1.15
 
